@@ -37,4 +37,13 @@ public class Tool {
         }
         return str;
     }
+
+    public static String validStringRequest(String input) {
+        if (input != null) {
+            input = input.trim();
+        } else {
+            input = "";
+        }
+        return input;
+    }
 }

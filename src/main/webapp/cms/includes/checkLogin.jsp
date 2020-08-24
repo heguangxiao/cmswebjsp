@@ -1,4 +1,4 @@
-<%@page contentType="text/html; charset=utf-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     try {
         if (userLogin == null) {
