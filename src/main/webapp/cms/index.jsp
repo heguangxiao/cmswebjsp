@@ -8,6 +8,7 @@
     </head>
     <body>
     <body class="hold-transition sidebar-mini layout-fixed">
+        <%@include file="/cms/includes/checkLogin.jsp" %>
         
         <div class="wrapper">
             

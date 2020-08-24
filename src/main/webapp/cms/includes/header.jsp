@@ -1,3 +1,5 @@
+<%@page import="com.mycompany.cmswebjsp.model.User"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!-- Tell the browser to be responsive to screen width -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Font Awesome -->
@@ -20,3 +22,35 @@
 <link rel="stylesheet" href="<%=request.getContextPath()%>/plugins/summernote/summernote-bs4.css">
 <!-- Google Font: Source Sans Pro -->
 <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+<%
+    request.setCharacterEncoding("utf-8");
+    String urlLog = "http://" + request.getHeader("host");
+    urlLog += request.getRequestURI();
+    if (request.getQueryString() != null) {
+        urlLog += "?" + request.getQueryString();
+    }
+    String webPath = request.getContextPath();
+    if (webPath.equals("/")) {
+        webPath = "";
+    }
+    // System.out.println(webPath);
+    //---------------Admin
+    User userlogin = User.getAccount(session);
+    if (userlogin == null) {
+        session.setAttribute("error", "Bạn cần đăng nhập để truy cập hệ thống");
+        out.print("<script>top.location='" + request.getContextPath() + "/admin/login.jsp';</script>");
+        return;
+    } else if (userlogin.getUserType() != Account.TYPE.ADMIN.val) {
+        out.print("<script>top.location='" + request.getContextPath() + "/dang-nhap/';</script>");
+        return;
+    }
+    //---------PAGE SETING----------------
+    String pageURL = "";
+    Enumeration paraList = null;
+    int maxRow = 100;
+    if (!userlogin.checkView(request) && !Tool.getURI(request).endsWith("/admin/")) {
+        session.setAttribute("mess", "Bạn không có quyền View Tối thiểu để truy cập module này!");
+        response.sendRedirect(request.getContextPath() + "/admin/");
+        return;
+    }
+%>
