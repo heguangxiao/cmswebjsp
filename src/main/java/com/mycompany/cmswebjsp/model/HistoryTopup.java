@@ -5,17 +5,21 @@
  */
 package com.mycompany.cmswebjsp.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import org.apache.log4j.Logger;
 
-public class AutoService {    
-    static final Logger logger = Logger.getLogger(AutoService.class);
+/**
+ *
+ * @author HTC-PC
+ */
+public class HistoryTopup {
+    static final Logger logger = Logger.getLogger(HistoryTopup.class);
     
     private int id;
     private String phone;
+    private int money;
+    private Timestamp topupAt;
     private String telco;
-    private Date startAt;
-    private Date endAt;
 
     public int getId() {
         return id;
@@ -33,6 +37,22 @@ public class AutoService {
         this.phone = phone;
     }
 
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public Timestamp getTopupAt() {
+        return topupAt;
+    }
+
+    public void setTopupAt(Timestamp topupAt) {
+        this.topupAt = topupAt;
+    }
+
     public String getTelco() {
         return telco;
     }
@@ -40,20 +60,5 @@ public class AutoService {
     public void setTelco(String telco) {
         this.telco = telco;
     }
-
-    public Date getStartAt() {
-        return startAt;
-    }
-
-    public void setStartAt(Date startAt) {
-        this.startAt = startAt;
-    }
-
-    public Date getEndAt() {
-        return endAt;
-    }
-
-    public void setEndAt(Date endAt) {
-        this.endAt = endAt;
-    }
+    
 }

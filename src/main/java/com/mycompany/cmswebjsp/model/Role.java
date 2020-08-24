@@ -9,10 +9,6 @@ import com.mycompany.cmswebjsp.utils.Tool;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 
-/**
- *
- * @author HTC-PC
- */
 public class Role {
     static final Logger logger = Logger.getLogger(Role.class);  
     

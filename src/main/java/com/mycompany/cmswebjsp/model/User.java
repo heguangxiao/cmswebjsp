@@ -8,10 +8,6 @@ package com.mycompany.cmswebjsp.model;
 import java.sql.Timestamp;
 import org.apache.log4j.Logger;
 
-/**
- *
- * @author HIEU
- */
 public class User {
     
     static final Logger logger = Logger.getLogger(User.class);

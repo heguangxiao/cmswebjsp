@@ -18,10 +18,6 @@ import java.util.HashMap;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
-/**
- *
- * @author HTC-PC
- */
 public class UserRepository {
     static final Logger logger = Logger.getLogger(UserRepository.class);
     public static final HashMap<Integer, User> CACHE = new HashMap<>();
@@ -78,13 +74,21 @@ public class UserRepository {
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
-        String sql = "SELECT * FROM account ";
+        String sql = "SELECT * FROM account WHERE 1 = 1";
         try {
             conn = DBPool.getConnection();
             pstm = conn.prepareStatement(sql);
             rs = pstm.executeQuery();
             while (rs.next()) {
                 User user = new User();
+                user.setId(rs.getInt("ID"));
+                user.setUserName(rs.getString("USERNAME"));
+                user.setPassword(rs.getString("PASSWORD"));
+                user.setCreatedAt(rs.getTimestamp("CREATED_AT"));
+                user.setCreatedBy(rs.getString("CREATED_BY"));
+                user.setStatus(rs.getInt("STATUS"));
+                user.setType(rs.getInt("TYPE"));
+                user.setRole(rs.getString("ROLE"));
                 all.add(user);
             }
         } catch (SQLException ex) {
@@ -93,5 +97,141 @@ public class UserRepository {
             DBPool.freeConn(rs, pstm, conn);
         }
         return all;
+    }
+    
+    public User findById(int id) {  
+        User user = null;      
+        Connection conn = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        String sql = "SELECT * FROM account WHERE ID = ?";
+        try {
+            conn = DBPool.getConnection();
+            pstm = conn.prepareStatement(sql);
+            int i = 1;
+            pstm.setInt(i++, id);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                user = new User();
+                user.setId(rs.getInt("ID"));
+                user.setUserName(rs.getString("USERNAME"));
+                user.setPassword(rs.getString("PASSWORD"));
+                user.setCreatedAt(rs.getTimestamp("CREATED_AT"));
+                user.setCreatedBy(rs.getString("CREATED_BY"));
+                user.setStatus(rs.getInt("STATUS"));
+                user.setType(rs.getInt("TYPE"));
+                user.setRole(rs.getString("ROLE"));
+            }
+        } catch (SQLException ex) {
+            logger.error(Tool.getLogMessage(ex));
+        } finally {
+            DBPool.freeConn(rs, pstm, conn);
+        }
+        return user;
+    }
+    
+    public boolean save(User user) {
+        boolean result = false;
+        Connection conn = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        String sql = "INSERT INTO account(USERNAME, PASSWORD, CREATED_AT, CREATED_BY, STATUS, TYPE, ROLE) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        try {
+            conn = DBPool.getConnection();
+            pstm = conn.prepareStatement(sql);
+            int i = 1;
+            pstm.setString(i++, user.getUserName());
+            pstm.setString(i++, user.getPassword());
+            pstm.setTimestamp(i++, user.getCreatedAt());
+            pstm.setString(i++, user.getCreatedBy());
+            pstm.setInt(i++, user.getStatus());
+            pstm.setInt(i++, user.getType());
+            pstm.setString(i++, user.getRole());
+            result = pstm.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            logger.error(Tool.getLogMessage(ex));
+        } finally {
+            DBPool.freeConn(rs, pstm, conn);
+        }
+        return result;
+    }
+    
+    public boolean update(User user) {
+        boolean result = false;
+        Connection conn = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        String sql = "UPDATE account SET USERNAME = ?, PASSWORD = ?, STATUS = ?, TYPE = ?, ROLE = ? WHERE ID = ?";
+        try {
+            conn = DBPool.getConnection();
+            pstm = conn.prepareStatement(sql);
+            int i = 1;
+            pstm.setString(i++, user.getUserName());
+            pstm.setString(i++, user.getPassword());
+            pstm.setInt(i++, user.getStatus());
+            pstm.setInt(i++, user.getType());
+            pstm.setString(i++, user.getRole());
+            pstm.setInt(i++, user.getId());
+            result = pstm.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            logger.error(Tool.getLogMessage(ex));
+        } finally {
+            DBPool.freeConn(rs, pstm, conn);
+        }
+        return result;
+    }
+    
+    public boolean checkGod(String userName) {        
+        boolean result = false;
+        if (userName.equalsIgnoreCase("cmswebgod")) {
+            result = true;
+        }
+        return result;
+    }
+    
+    public boolean delete(int id) {
+        boolean result = false;
+        User user = findById(id);
+        if (!checkGod(user.getUserName())) {
+            Connection conn = null;
+            PreparedStatement pstm = null;
+            ResultSet rs = null;
+            String sql = "DELETE FROM account WHERE ID = ?";
+            try {
+                conn = DBPool.getConnection();
+                pstm = conn.prepareStatement(sql);
+                int i = 1;
+                pstm.setInt(i++, id);
+                result = pstm.executeUpdate() == 1;
+            } catch (SQLException ex) {
+                logger.error(Tool.getLogMessage(ex));
+            } finally {
+                DBPool.freeConn(rs, pstm, conn);
+            } 
+        }
+        return result; 
+    }
+    
+    public boolean existsByUserName(String userName) {
+        boolean result = false;
+        Connection conn = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        String sql = "SELECT USERNAME FROM account WHERE USERNAME = ?";
+        try {
+            conn = DBPool.getConnection();
+            pstm = conn.prepareStatement(sql);
+            int i = 1;
+            pstm.setString(i++, userName);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                result = true;
+            }
+        } catch (SQLException ex) {
+            logger.error(Tool.getLogMessage(ex));
+        } finally {
+            DBPool.freeConn(rs, pstm, conn);
+        }
+        return result;
     }
 }
