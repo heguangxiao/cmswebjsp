@@ -5,7 +5,7 @@
  */
 package com.mycompany.cmswebjsp.model;
 
-import java.util.Date;
+import java.sql.Date;
 import org.apache.log4j.Logger;
 
 public class AutoService {    

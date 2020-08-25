@@ -33,6 +33,18 @@ public class UserRepository {
             System.out.println("Error when initialize : " + e);
         }
     }
+
+    private static void reload() {
+        synchronized (CACHE) {
+            UserRepository dao = new UserRepository();
+            ArrayList<User> cache = dao.findAll();
+            CACHE.clear();
+            for (User one : cache) {
+                CACHE.put(one.getId(), one);
+            }
+            CACHE.notifyAll();
+        }
+    }
     
     public static User getUser(HttpSession session) {
         User user = null;
@@ -148,6 +160,9 @@ public class UserRepository {
             pstm.setInt(i++, user.getType());
             pstm.setString(i++, user.getRole());
             result = pstm.executeUpdate() == 1;
+            if (result) {
+                reload();
+            }
         } catch (SQLException ex) {
             logger.error(Tool.getLogMessage(ex));
         } finally {
@@ -173,6 +188,9 @@ public class UserRepository {
             pstm.setString(i++, user.getRole());
             pstm.setInt(i++, user.getId());
             result = pstm.executeUpdate() == 1;
+            if (result) {
+                reload();
+            }
         } catch (SQLException ex) {
             logger.error(Tool.getLogMessage(ex));
         } finally {
@@ -203,6 +221,9 @@ public class UserRepository {
                 int i = 1;
                 pstm.setInt(i++, id);
                 result = pstm.executeUpdate() == 1;
+                if (result) {
+                    reload();
+                }
             } catch (SQLException ex) {
                 logger.error(Tool.getLogMessage(ex));
             } finally {
