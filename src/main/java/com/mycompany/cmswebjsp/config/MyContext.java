@@ -28,6 +28,10 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.jconfig.Configuration;
+import org.jconfig.ConfigurationManager;
+import org.jconfig.ConfigurationManagerException;
+import org.jconfig.handler.XMLFileHandler;
 
 /**
  *
@@ -48,11 +52,14 @@ public class MyContext implements ServletContextListener, HttpSessionListener {
         ServletContext sc = sce.getServletContext();
         running = true;
         System.setProperty("java.awt.headless", "true");    // Fix Error java.lang.NoClassDefFoundError: Could not initialize class sun.awt.X11GraphicsEnvironmen
+        ROOT_DIR = sc.getRealPath("/");
         Tool.debug("ROOT_DIR:" + ROOT_DIR);
         configDir = sc.getInitParameter("config");
         configDir = ROOT_DIR + configDir;
         loadLog4j(configDir + "/Log4j.properties");
+        MyConfig.config = getConfig("config.xml");
         PoolMng.CreatePool();
+        DE_BUG = MyConfig.getBoolean("DE_BUG", false, "General");
     }
 
     @Override
@@ -124,6 +131,27 @@ public class MyContext implements ServletContextListener, HttpSessionListener {
                 BasicConfigurator.configure();
             }
         }
+    }
+
+    private static Configuration getConfig(String configFile) {
+        Configuration _config = null;
+        String configPath = configDir + "/" + configFile;
+        configPath = configPath.replaceAll("\\\\", "/");
+        File file = new File(configPath);
+        logger.info(file.getName());
+        XMLFileHandler handler = new XMLFileHandler();
+        handler.setFile(file);
+        try {
+            logger.debug("trying to load file config");
+            ConfigurationManager cm = ConfigurationManager.getInstance();
+            cm.load(handler, "engineConfig");
+            logger.info("file config successfully processed");
+            logger.info("get Config From ConfigurationManager");
+            _config = ConfigurationManager.getConfiguration("engineConfig");
+        } catch (ConfigurationManagerException e) {
+            System.out.println(e);
+        }
+        return _config;
     }
     
 }

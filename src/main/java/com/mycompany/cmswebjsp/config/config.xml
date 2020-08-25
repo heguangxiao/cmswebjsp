@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+    <category name="General">
+        <property name="DE_BUG" value="1" />
+    </category>
     <category name="URL"> 
         <property name="LOCAL_PATH" value="" />
     </category>

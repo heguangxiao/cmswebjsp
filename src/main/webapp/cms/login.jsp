@@ -1,3 +1,5 @@
+<%@page import="com.mycompany.cmswebjsp.repo.UserRepository"%>
+<%@page import="com.mycompany.cmswebjsp.model.User"%>
 <%@page import="com.mycompany.cmswebjsp.utils.Tool"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -20,11 +22,20 @@
     </head>
     <%
         if (request.getParameter("submit") != null) {
-            String user = Tool.validStringRequest(request.getParameter("email"));
-            String pass = Tool.validStringRequest(request.getParameter("password"));
-            session.setAttribute("error", user + " : " + pass);
-//            response.sendRedirect(request.getContextPath() + "/cms/login.jsp");
-//            return;        
+            String userName = Tool.validStringRequest(request.getParameter("userName"));
+            String password = Tool.validStringRequest(request.getParameter("password"));
+            User user = User.getUser(userName);
+            if (user == null) {
+                session.setAttribute("error", "Tài khoản không tồn tại");
+            } else {
+                if (!password.equals(user.getPassword())) {
+                    session.setAttribute("error", "Tài khoản không tồn tại");
+                } else {
+                    session.setAttribute("userLogin", user);
+                    response.sendRedirect(request.getContextPath() + "/cms/");
+                    return;
+                }
+            }
         }
     %>
     <body class="hold-transition login-page">        
@@ -41,7 +52,7 @@
 
                     <form action="" method="post">
                         <div class="input-group mb-3">
-                            <input type="email" name="email" class="form-control" placeholder="Email">
+                            <input type="text" name="userName" class="form-control" placeholder="Username">
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <span class="fas fa-envelope"></span>

@@ -142,6 +142,37 @@ public class UserRepository {
         return user;
     }
     
+    public User findByUserName(String userName) {  
+        User user = null;      
+        Connection conn = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        String sql = "SELECT * FROM account WHERE USERNAME = ?";
+        try {
+            conn = DBPool.getConnection();
+            pstm = conn.prepareStatement(sql);
+            int i = 1;
+            pstm.setString(i++, userName);
+            rs = pstm.executeQuery();
+            if (rs.next()) {
+                user = new User();
+                user.setId(rs.getInt("ID"));
+                user.setUserName(rs.getString("USERNAME"));
+                user.setPassword(rs.getString("PASSWORD"));
+                user.setCreatedAt(rs.getTimestamp("CREATED_AT"));
+                user.setCreatedBy(rs.getString("CREATED_BY"));
+                user.setStatus(rs.getInt("STATUS"));
+                user.setType(rs.getInt("TYPE"));
+                user.setRole(rs.getString("ROLE"));
+            }
+        } catch (SQLException ex) {
+            logger.error(Tool.getLogMessage(ex));
+        } finally {
+            DBPool.freeConn(rs, pstm, conn);
+        }
+        return user;
+    }
+    
     public boolean save(User user) {
         boolean result = false;
         Connection conn = null;
