@@ -27,7 +27,7 @@ public class AutoServiceRepository implements BaseRepository<AutoService>{
 
     @Override
     public ArrayList<AutoService> findAll() {
-        ArrayList all = new ArrayList();
+        ArrayList<AutoService> all = new ArrayList();
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;

@@ -1,3 +1,7 @@
+<%@page import="com.mycompany.cmswebjsp.utils.DateProc"%>
+<%@page import="com.mycompany.cmswebjsp.utils.Md5"%>
+<%@page import="com.mycompany.cmswebjsp.model.User"%>
+<%@page import="com.mycompany.cmswebjsp.repo.UserRepository"%>
 <%@page import="com.mycompany.cmswebjsp.utils.Tool"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -21,11 +25,33 @@
     </head>
     <%
         if (request.getParameter("submit") != null) {
-            String user = Tool.validStringRequest(request.getParameter("email"));
-            String pass = Tool.validStringRequest(request.getParameter("password"));
-            session.setAttribute("error", "haha");
-//            response.sendRedirect(request.getContextPath() + "/cms/login.jsp");
-//            return;        
+            String userName = Tool.validStringRequest(request.getParameter("userName"));
+            String password = Tool.validStringRequest(request.getParameter("password"));
+            String rePassword = Tool.validStringRequest(request.getParameter("rePassword"));
+            if (!password.equals(rePassword)) {
+                session.setAttribute("error", "Xác nhận mật khẩu không chính xác");
+            } else {
+                UserRepository userRepository = new UserRepository();
+                User user = userRepository.getUser(userName);
+                if (user != null) {
+                    session.setAttribute("error", "Tài khoản đã tồn tại. Vui lòng chọn tài khoản khác để đăng ký.");
+                } else {
+                    user = new User();
+                    user.setUserName(userName);
+                    user.setPassword(Md5.encryptMD5(password));
+                    user.setCreatedBy(userName);
+                    user.setCreatedAt(DateProc.createTimestamp());
+                    user.setStatus(0);
+                    user.setType(0);
+                    user.setRole("");                    
+                    if (!userRepository.save(user)) {
+                        session.setAttribute("error", "Trang web hiện đang bảo trì. Vui lòng quay lại sau. Tks.");
+                    } else {
+                        response.sendRedirect(request.getContextPath() + "/cms/login.jsp");
+                        return;
+                    }
+                }
+            }
         }
     %>
     <body class="hold-transition register-page">
@@ -42,18 +68,10 @@
 
                 <form action="" method="post">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="fullName" id="fullName" placeholder="Full name">
+                        <input type="userName" class="form-control" name="userName" id="userName" placeholder="Username">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Email">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
                             </div>
                         </div>
                     </div>

@@ -20,11 +20,11 @@ import org.apache.log4j.Logger;
  * @author HIEU
  */
 public class HistoryTopupRepository implements BaseRepository<HistoryTopup>{
-    static final Logger logger = Logger.getLogger(BlockPhoneRepository.class);
+    static final Logger logger = Logger.getLogger(HistoryTopupRepository.class);
 
     @Override
     public ArrayList<HistoryTopup> findAll() {
-        ArrayList all = new ArrayList();
+        ArrayList<HistoryTopup> all = new ArrayList();
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;

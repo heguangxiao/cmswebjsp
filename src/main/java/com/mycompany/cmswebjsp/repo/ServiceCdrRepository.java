@@ -24,7 +24,7 @@ public class ServiceCdrRepository implements BaseRepository<ServiceCdr> {
 
     @Override
     public ArrayList<ServiceCdr> findAll() {
-        ArrayList all = new ArrayList();
+        ArrayList<ServiceCdr> all = new ArrayList();
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;

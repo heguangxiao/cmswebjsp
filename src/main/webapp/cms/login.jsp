@@ -1,3 +1,4 @@
+<%@page import="com.mycompany.cmswebjsp.utils.Md5"%>
 <%@page import="com.mycompany.cmswebjsp.repo.UserRepository"%>
 <%@page import="com.mycompany.cmswebjsp.model.User"%>
 <%@page import="com.mycompany.cmswebjsp.utils.Tool"%>
@@ -24,12 +25,13 @@
         if (request.getParameter("submit") != null) {
             String userName = Tool.validStringRequest(request.getParameter("userName"));
             String password = Tool.validStringRequest(request.getParameter("password"));
-            User user = User.getUser(userName);
+            UserRepository userRepository = new UserRepository();
+            User user = userRepository.getUser(userName);
             if (user == null) {
                 session.setAttribute("error", "Tài khoản không tồn tại");
             } else {
-                if (!password.equals(user.getPassword())) {
-                    session.setAttribute("error", "Tài khoản không tồn tại");
+                if (!Md5.encryptMD5(password).equals(user.getPassword())) {
+                    session.setAttribute("error", "Mật khẩu không chính xác");
                 } else {
                     session.setAttribute("userLogin", user);
                     response.sendRedirect(request.getContextPath() + "/cms/");

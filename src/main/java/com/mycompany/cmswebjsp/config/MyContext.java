@@ -101,7 +101,7 @@ public class MyContext implements ServletContextListener, HttpSessionListener {
             if (listSession != null && listSession.size() > 0) {
                 for (HttpSession oneSession : listSession) {
                     if (oneSession.getId().equals(evtSession.getId())) {
-                        User userlogin = (User) oneSession.getAttribute("userlogin");
+                        User userlogin = (User) oneSession.getAttribute("userLogin");
                         if (userlogin != null) {
                             SESSION_ONLINE.remove(userlogin.getUserName());
                             Tool.debug("Ngon lay duoc User [" + userlogin.getUserName() + "] Theo Session [" + oneSession.getId() + "]:" + DateProc.createTimestamp());

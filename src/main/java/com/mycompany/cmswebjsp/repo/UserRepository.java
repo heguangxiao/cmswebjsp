@@ -26,9 +26,9 @@ public class UserRepository {
         try {
             UserRepository dao = new UserRepository();
             ArrayList<User> cache = dao.findAll();
-            for (User one : cache) {
+            cache.forEach((one) -> {
                 CACHE.put(one.getId(), one);
-            }
+            });
         } catch (Exception e) {
             System.out.println("Error when initialize : " + e);
         }
@@ -39,9 +39,9 @@ public class UserRepository {
             UserRepository dao = new UserRepository();
             ArrayList<User> cache = dao.findAll();
             CACHE.clear();
-            for (User one : cache) {
+            cache.forEach((one) -> {
                 CACHE.put(one.getId(), one);
-            }
+            });
             CACHE.notifyAll();
         }
     }
@@ -82,7 +82,7 @@ public class UserRepository {
     }
 
     public ArrayList<User> findAll() {
-        ArrayList all = new ArrayList();
+        ArrayList<User> all = new ArrayList();
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;

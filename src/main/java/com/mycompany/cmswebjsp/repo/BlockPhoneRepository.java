@@ -24,7 +24,7 @@ public class BlockPhoneRepository implements BaseRepository<BlockPhone> {
 
     @Override
     public ArrayList<BlockPhone> findAll() {
-        ArrayList all = new ArrayList();
+        ArrayList<BlockPhone> all = new ArrayList();
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;

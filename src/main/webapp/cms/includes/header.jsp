@@ -24,9 +24,4 @@
 <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 <%
     User userLogin = User.getUser(session);
-    if (userLogin == null) {
-        session.setAttribute("error", "Bạn cần đăng nhập để truy cập hệ thống");
-        out.print("<script>top.location='" + request.getContextPath() + "/admin/login.jsp';</script>");
-        return;
-    }     
 %>

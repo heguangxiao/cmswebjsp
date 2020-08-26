@@ -24,7 +24,7 @@ public class ServiceQuotaRepository implements BaseRepository<ServiceQuota>{
 
     @Override
     public ArrayList<ServiceQuota> findAll() {
-        ArrayList all = new ArrayList();
+        ArrayList<ServiceQuota> all = new ArrayList();
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;

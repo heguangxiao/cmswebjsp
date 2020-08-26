@@ -24,7 +24,7 @@ public class HistoryChargRepository implements BaseRepository<HistoryCharg>{
 
     @Override
     public ArrayList<HistoryCharg> findAll() {
-        ArrayList all = new ArrayList();
+        ArrayList<HistoryCharg> all = new ArrayList();
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rs = null;
